@@ -1,0 +1,56 @@
+name: cpp-cmake-mingw-prebuilt-release-actions-workflow
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'c*'
+      
+permissions:
+    contents: write
+    
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: download compiler
+        shell: cmd
+        run: |
+          cd /d "%USERPROFILE%\Downloads" &&^
+          curl https://github.com/Data-Oriented-House/PortableBuildTools/releases/download/v2.6/PortableBuildTools.exe -L --output PortableBuildTools.exe &&^
+          dir
+          
+      - name: compiler list versions
+        shell: cmd
+        run: |
+          cd /d "%USERPROFILE%\Downloads" &&^
+          PortableBuildTools.exe list 
+          
+      - name: compiler set up
+        shell: cmd
+        run: |
+          cd /d "%USERPROFILE%\Downloads" &&^
+          PortableBuildTools.exe accept_license msvc=14.41.17.11 sdk=26100 target=x64 host=x64 path="%USERPROFILE%\Downloads\BuildTools" &&^
+          cd BuildTools &&^
+          dir /S /B
+        
+      - uses: actions/checkout@v4
+
+      - name: compiler set up
+        shell: cmd
+        run: |
+          raw-build.cmd
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          path: main.exe
+          filename: "${{ github.event.repository.name }}-${{ github.ref_name }}.zip"
+        
+      - name: Release prebuilt
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "${{ github.event.repository.name }}-${{ github.ref_name }}.zip"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
