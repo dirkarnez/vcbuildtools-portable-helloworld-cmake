@@ -1,5 +1,9 @@
-vcbuildtools-portable-helloworld
-================================
+vcbuildtools-portable-helloworld-cmake
+======================================
+### Tutorials
+- [Finding MSVC with CMake • Izzy Muerte](https://izzys.casa/2023/09/finding-msvc-with-cmake/)
+  - [microsoft/vswhere: Locate Visual Studio 2017 and newer installations](https://github.com/microsoft/vswhere)
+
 ### Using
 - [Data-Oriented-House/PortableBuildTools: Portable VS Build Tools installer](https://github.com/Data-Oriented-House/PortableBuildTools)
 
